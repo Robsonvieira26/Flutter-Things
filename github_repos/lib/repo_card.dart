@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:github_repos/repo_details.dart';
+import 'package:github_repos/repo_model.dart';
 
 class ReposCard extends StatelessWidget {
 
-  final Map repo;
+  final RepoModel repo;
   ReposCard(this.repo);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-
+        Navigator.push(context, MaterialPageRoute(builder: (_) => RepoDetails(repo: repo)));
       },
       child: Card(
         shape: RoundedRectangleBorder(
@@ -21,40 +23,34 @@ class ReposCard extends StatelessWidget {
           child: Row(
             children: <Widget>[
               Container(
-                padding: EdgeInsets.only(right: 10),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(15),
-                  child: Container(
-                    padding: EdgeInsets.only(right: 10),
-                    width: 80,
-                    height: 80,
-                    color: Colors.white,
-                  ),
-                ),
+                height: 80,
+                width: 80,
+                padding: const EdgeInsets.only(right: 10),
+                child: Image.asset("assets/logos/${repo.language}.png"),
               ),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      "${repo["name"].toUpperCase()}",
+                      "${repo.name.toUpperCase()}",
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                        color: Colors.white,
+                        color: Theme.of(context).textSelectionColor,
                         fontSize: 20,
                         fontWeight: FontWeight.bold
                       ),
                     ),
                     Text(
-                      "Stars: ${repo["stargazers_count"]}",
+                      "Stars: ${repo.stargazersCount}",
                       style: TextStyle(
-                        color: Colors.white
+                        color: Theme.of(context).textSelectionColor
                       ),
                     ),
                     Text(
-                      "Forks: ${repo["forks_count"]}",
+                      "Forks: ${repo.forksCount}",
                       style: TextStyle(
-                        color: Colors.white
+                        color: Theme.of(context).textSelectionColor
                       ),
                     ),
                   ],

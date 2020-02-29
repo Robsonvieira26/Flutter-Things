@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:github_repos/repos.dart';
+import 'package:github_repos/repos_list.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -8,17 +8,17 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
 
-  String _user;
   TextEditingController _userController = new TextEditingController();
 
-  @override
-  void initState() {
-    super.initState();
+  GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
+
+  _clearText() {
     _userController.text = "";
   }
 
   @override
   Widget build(BuildContext context) {
+    _clearText();
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
@@ -31,15 +31,17 @@ class _HomeState extends State<Home> {
           )
         ),
       ),
-      body: SingleChildScrollView(
+      body: Form(
+        key: _formKey,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               Row(
                 children: <Widget>[
                   Expanded(
-                    child: TextField(
+                    child: TextFormField(
                       controller: _userController,
                       style: TextStyle(
                         color: Theme.of(context).textSelectionColor,
@@ -53,6 +55,12 @@ class _HomeState extends State<Home> {
                         enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).primaryColor)),
                         errorBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.red)),
                       ),
+                      validator: (text) {
+                        if (text.isEmpty) {
+                          return "Type user";
+                        }
+                        return null;
+                      },
                     ),
                   ),
                   SizedBox(width: 20),
@@ -70,20 +78,14 @@ class _HomeState extends State<Home> {
                         size: 30,
                       ),
                       onPressed: () {
-                        setState(() {
-                          _user = _userController.text;
-                        });
+                        if (_formKey.currentState.validate()) {
+                          Navigator.push(context, MaterialPageRoute(builder: (_) => ReposGridView(_userController.text)));
+                        }
                       },
                     ),
                   )
                 ],
               ),
-              SizedBox(height: 25),
-              (_user != null)
-              ? ReposGridView(_user)
-              : Container(
-                child: Text("Waiting for username")
-              )
             ],
           ),
         ),
